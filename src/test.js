@@ -7,7 +7,7 @@ var videoIsPlaying;
 function setup() {
   videoIsPlaying = false;
   createCanvas(640, 360);
-  video = createVideo('asset/Untitled.mov', vidLoad);
+  video = createVideo('asset/1.mp4', vidLoad);
   video.size(width, height);
 
   // Create a new poseNet method with a single detection
