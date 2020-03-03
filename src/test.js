@@ -1,3 +1,18 @@
+
+
+// Copyright (c) 2018 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+/* ===
+ml5 Example
+PoseNet example using p5.js
+=== */
+
+// PoseNet with a pre-recorded video, modified from:
+// https://github.com/ml5js/ml5-examples/blob/master/p5js/PoseNet/sketch.js
+
 let poseNet;
 let poses = [];
 
@@ -7,11 +22,13 @@ var videoIsPlaying;
 function setup() {
   videoIsPlaying = false;
   createCanvas(640, 360);
-  video = createVideo('asset/1.mp4', vidLoad);
+  // noCanvas();
+  video = createVideo('1.mov', vidLoad);
   video.size(width, height);
 
   // Create a new poseNet method with a single detection
   poseNet = ml5.poseNet(video, modelReady);
+  vidLoad();
   // This sets up an event that fills the global variable "poses"
   // with an array every time new poses are detected
   poseNet.on('pose', function(results) {
@@ -25,11 +42,8 @@ function modelReady() {
   select('#status').html('Model Loaded');
 }
 
-function mousePressed(){
-  vidLoad();
-}
-
 function draw() {
+  // background(0);
   image(video, 0, 0, width, height);
 
   // We can call both functions to draw all keypoints and the skeletons
@@ -88,3 +102,21 @@ function keyPressed(){
     videoIsPlaying = true;
   }
 }
+
+//multiple video
+// function drawPoses(poses) {
+//   // Modify the graphics context to flip all remaining drawing horizontally.
+//   // This makes the image act like a mirror (reversing left and right); this is
+//   // easier to work with.
+//   translate(width, 0); // move the left side of the image to the right
+//   scale(-1.0, 1.0);
+//   image(video, 0, 0, video.width/2, video.height/2);
+//   filter(GRAY);
+//   image(video, 0, height/2, video.width/2, video.height/2);
+//   filter(DILATE);
+//   image(video, width/2, 0, video.width/2, video.height/2);
+//   filter(BLUR, 1);
+//   image(video, width/2, height/2, video.width/2, video.height/2);
+//   drawKeypoints(poses);
+//   drawSkeleton(poses);
+// }

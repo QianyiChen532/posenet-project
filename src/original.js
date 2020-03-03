@@ -7,7 +7,6 @@ export function setup() {
   createCanvas(640, 480);
   video = select("video") || createCapture(VIDEO);
   video.size(width, height);
-  console.log(video);
 
   // Create a new poseNet method with single-pose detection. The second argument
   // is a function that is called when the model is loaded. It hides the HTML
@@ -36,7 +35,7 @@ function drawPoses(poses) {
   scale(-1.0, 1.0);
   image(video, 0, 0, video.width, video.height);
   drawKeypoints(poses);
-  drawSkeleton(poses);
+  // drawSkeleton(poses);
 }
 
 // Draw ellipses over the detected keypoints
