@@ -90,9 +90,9 @@ class Attractor {
   // Method to display
   display() {
     ellipseMode(CENTER);
-
+// console.log('1');
     noStroke();
-    fill(255,this.lifespan*0.01);
+    fill(255);
     ellipse(this.position.x, this.position.y, this.mass * 2, this.mass * 2);
   }
 
