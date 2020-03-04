@@ -2,11 +2,11 @@
 class Mover {
   constructor(x, y, mass) {
     this.mass = mass;
-    this.radius = mass ;
+    this.radius = mass*2 ;
     this.position = createVector(x, y);
-    this.velocity = createVector(0.1,0);
+    this.velocity = createVector(0.01,0);
     this.acceleration = createVector(0, 0);
-    this.accAdj = random(0.001, 0.05);
+    this.accAdj = 0;//random(0.001, 0.05);
 
     this.lifespan = 100;
     this.lifeReduction = 1;
@@ -50,12 +50,12 @@ class Mover {
   // }
 
   update() {
-    // this.acceleration.mult(this.accAdj); // ***
-    // this.velocity.mult(0.95);
 
     this.velocity.add(this.acceleration);
     this.position.add(this.velocity);
+    this.velocity.mult(0.5);
     this.acceleration.mult(0);
+
 
     this.velocity.setMag(6);
     // let s = this.velocity.mag();
@@ -78,18 +78,15 @@ class Mover {
 
   }
 
-
   display() {
     noStroke();
-    // this.alpha = noise(this.position.x,this.position.y);
-    // let c = color('hsba(255, 127,0,0.9)');
 
     this.r = map(this.position.x,0,windowWidth,0,255);
     this.g = map(this.position.y,0,windowHeight,0,255);
     this.b = random(255);
 
     fill(this.r,this.g,this.b);
-    ellipse(this.position.x, this.position.y, this.radius * 2);
+    ellipse(this.position.x, this.position.y, this.radius);
   }
 }
 
@@ -126,10 +123,8 @@ class Attractor {
     return force;
   }
 
-  // Method to display
   display() {
     ellipseMode(CENTER);
-// console.log('1');
     noStroke();
     fill(255);
     ellipse(this.position.x, this.position.y, this.mass * 2, this.mass * 2);
