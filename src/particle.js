@@ -2,14 +2,20 @@
 class Mover {
   constructor(x, y, mass) {
     this.mass = mass;
-    this.radius = mass * 3;
+    this.radius = mass ;
     this.position = createVector(x, y);
     this.velocity = createVector(0.1,0);
     this.acceleration = createVector(0, 0);
+    this.accAdj = random(0.001, 0.05);
 
     this.lifespan = 100;
     this.lifeReduction = 1;
     this.isDone = false;
+
+    //color
+    this.r = map(this.r,0,int(this.position.x),0,255);
+    this.g = 0;
+    this.b = random(255);
   }
 
   applyForce(force) {
@@ -17,13 +23,41 @@ class Mover {
     this.acceleration.add(f);
   }
 
+  checkCollision(other){
+    let distance = this.position.dist(other.position);
+ if (distance < this.radius + other.radius) {
+
+
+   let force1 = p5.Vector.sub(other.position, this.position);
+   force1.mult(-1);
+   force1.mult(0.1);
+   this.applyForce(force1);
+
+   let force2 = p5.Vector.sub(this.position, other.position);
+   force2.mult(-1);
+   force2.mult(0.1);
+   other.applyForce(force2);
+
+ } else {
+
+ }
+  }
+
+  // explode(i){
+  //   if(i==2){
+  //     this.vel=random()
+  //   }
+  // }
+
   update() {
+    // this.acceleration.mult(this.accAdj); // ***
+    // this.velocity.mult(0.95);
 
     this.velocity.add(this.acceleration);
     this.position.add(this.velocity);
     this.acceleration.mult(0);
 
-    this.velocity.setMag(5);
+    this.velocity.setMag(6);
     // let s = this.velocity.mag();
     // s = constrain(s,5,10);
 
@@ -47,9 +81,14 @@ class Mover {
 
   display() {
     noStroke();
-    this.alpha = noise(this.position.x,this.position.y);
-    let c = color('hsba(255, 127,0,0.9)');
-    fill(c);
+    // this.alpha = noise(this.position.x,this.position.y);
+    // let c = color('hsba(255, 127,0,0.9)');
+
+    this.r = map(this.position.x,0,windowWidth,0,255);
+    this.g = map(this.position.y,0,windowHeight,0,255);
+    this.b = random(255);
+
+    fill(this.r,this.g,this.b);
     ellipse(this.position.x, this.position.y, this.radius * 2);
   }
 }
@@ -82,7 +121,7 @@ class Attractor {
     let force = p5.Vector.sub(this.position, mover.position);
     let distance = force.setMag(5,25);
     let strength = (this.G * this.mass * mover.mass) / (distance * distance);
-    force.setMag(strength);
+    force.setMag(strength*5);
 
     return force;
   }

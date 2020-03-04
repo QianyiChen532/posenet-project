@@ -1,12 +1,14 @@
 let movers = [];
-let size = 5;
+let size = 10;
 let attractor = [];
 let slider = [];
 
 let poseNet=[];
 let poses = [];
-let num = 2;//num of video
+let num = 1;//num of video
 let video = [];
+
+let left;
 
 
 function setup() {
@@ -17,8 +19,9 @@ function setup() {
   //for video
   // video = select("video") || createCapture(VIDEO);
   for (let i= 0;i< num;i++){
-    video[i] = createVideo('asset/'+i+'.mov',vidLoad);
-    video[i].size(640,480);
+    // video[i] = createVideo('asset/'+i+'.mov',vidLoad);
+      video[i] = select("video") || createCapture(VIDEO);
+    video[i].size();
     video[i].hide();
 
     //for posenet
@@ -58,60 +61,73 @@ function draw() {
   for (let i = 0; i<video.length;i++){
 
   }
-
-  image(video[0], 0, 0);
-  image(video[1], windowWidth/2,windowHeight/2, windowWidth/2,windowHeight/2);
-
+// scale(-1.0, 1.0);
+  image(video[0], 0, 0,windowWidth/2,windowHeight/2);
+  // image(video[1], windowWidth/2,windowHeight/2, windowWidth/2,windowHeight/2);
+  //   image(video[2], 0,windowHeight/2, windowWidth/2,windowHeight/2);
+  //   image(video[3], windowWidth/2,0, windowWidth/2,windowHeight/2);
+drawKeypoints(poses);
   background(0,50);
-  if (poses != undefined ) {
-    console.log(poses);
-    for (let k = 0; k<poses.length;k++){
-    if (poses[k] != undefined ) {
-      for (let i = 0; i < poses[k].length; i++) {
-        for (let j=0; j< poses[k][i].pose.keypoints.length; j++) {
-
-          let partname = poses[k][i].pose.keypoints[j].part;
-
-          let score = poses[k][i].pose.keypoints[j].score;
-          let x = poses[k][i].pose.keypoints[j].position.x;
-          let y = poses[k][i].pose.keypoints[j].position.y;
-          console.log('x ',x,'y ',y);
-
-          if (score > 0.5) {
-            if (partname == "leftWrist") {
-
-              noStroke();
-              fill(255, 0, 0);
-              ellipse(x, y, 100, 100);
-              // console.log(x,y);
-              attractor.push(new Attractor(x, y, random(8, 10)));
-            } else if (partname == "rightWrist") {
-              // console.log('2');
-              noStroke();
-              fill(255, 0, 0);
-              ellipse(x, y, 100, 100);
-              attractor.push(new Attractor(x, y, random(8, 10)));
-            }
-          }
-
-        }
-      }
-
-    }
-}
-}
+  console.log(1);
+//   if (poses != undefined ) {
+//     console.log(poses);
+//     for (let k = 0; k<poses.length;k++){
+//     if (poses[k] != undefined ) {
+//       for (let i = 0; i < poses[k].length; i++) {
+//         for (let j=0; j< poses[k][i].pose.keypoints.length; j++) {
+//
+//           let partname = poses[k][i].pose.keypoints[j].part;
+//
+//           let score = poses[k][i].pose.keypoints[j].score;
+//           let x = poses[k][i].pose.keypoints[j].position.x;
+//           let y = poses[k][i].pose.keypoints[j].position.y;
+//           // console.log('x ',x,'y ',y);
+//
+//           if (score > 0.3) {
+//             if (partname == "leftWrist") {
+//
+//               noStroke();
+//               fill(255, 0, 0);
+//               ellipse(x, y, 100, 100);
+//               // console.log(x,y);
+//               // attractor.push(new Attractor(x, y, random(8, 10)));
+//               left = createVector(x,y);
+//             } else if (partname == "rightWrist") {
+//               // console.log('2');
+//               noStroke();
+//               fill(255, 0, 0);
+//               translate()
+//               ellipse(x, y, 100, 100);
+//               // attractor.push(new Attractor(x, y, random(8, 10)));
+//             }
+//           }
+//
+//         }
+//       }
+//
+//     }
+// }
+// }
 
   for (let i = 0; i < movers.length; i++) {
+    for(let a = 0; a<movers.length;a++){
 
+      if(i!=a){
+        movers[i].checkCollision(movers[a]);
+      }
+    }
+    // let mouse = createVector(mouseX,mouseY);
+    //   mover[i].acceleration = p5.Vector.sub(mouse, mover[i].position);
+
+console.log(movers);
     movers[i].update();
     movers[i].display();
 
-
     for (let j = 0; j < attractor.length; j++) {
-
+      
       // let val = slider[j].value();
       // attractor[j] = new Attractor(val+200, val, random(8, 10));
-      // attractor[j].display();
+      attractor[j].display();
 
       attractor[j].life();
       // attractor[i].update(val,val);
@@ -121,22 +137,58 @@ function draw() {
     }
   }
 
-  // if (attractor.length > 4){
-  //   attractor.splice(0,1);
-  // }
+  if (attractor.length > 8){
+    attractor.splice(0,3);
+  }
 
 }
 
 // Draw ellipses over the detected keypoints
 function drawKeypoints(poses) {
-  poses.forEach(pose =>
-    pose.pose.keypoints.forEach(keypoint => {
+
       // console.log(pose.pose);
-      if (keypoint.score > 0.2) {
-        fill(0, 255, 0);
-        noStroke();
-        ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
-      }
-    })
-  );
+      if (poses != undefined ) {
+        console.log(poses);
+        for (let k = 0; k<poses.length;k++){
+        if (poses[k] != undefined ) {
+          for (let i = 0; i < poses[k].length; i++) {
+            for (let j=0; j< poses[k][i].pose.keypoints.length; j++) {
+
+              let partname = poses[k][i].pose.keypoints[j].part;
+
+              let score = poses[k][i].pose.keypoints[j].score;
+              let x = poses[k][i].pose.keypoints[j].position.x;
+              let y = poses[k][i].pose.keypoints[j].position.y;
+              // console.log('x ',x,'y ',y);
+
+              if (score > 0.3) {
+                if (partname == "leftWrist") {
+
+                  noStroke();
+                  fill(255, 0, 0);
+                  ellipse(x, y, 100, 100);
+                  // console.log(x,y);
+                  attractor.push(new Attractor(x, y, random(8, 10)));
+
+                } else if (partname == "rightWrist") {
+                  // console.log('2');
+                  noStroke();
+                  fill(255, 0, 0);
+                  translate()
+                  ellipse(x, y, 100, 100);
+                  attractor.push(new Attractor(x, y, random(8, 10)));
+                }
+              }
+
+            }
+          }
+
+        }
+    }
+    }
+      // if (keypoint.score > 0.2) {
+      //   fill(0, 255, 0);
+      //   noStroke();
+      //   ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
+      // }
 }
