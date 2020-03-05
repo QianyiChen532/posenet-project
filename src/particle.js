@@ -4,7 +4,7 @@ class Mover {
     this.mass = mass;
     this.radius = mass*2 ;
     this.position = createVector(x, y);
-    this.velocity = createVector(0.01,0);
+    this.velocity = createVector(1,1);
     this.acceleration = createVector(0, 0);
     this.accAdj = 0;//random(0.001, 0.05);
 
@@ -12,8 +12,10 @@ class Mover {
     this.lifeReduction = 1;
     this.isDone = false;
 
+    this.isCollide = false;
+
     //color
-    this.r = map(this.r,0,int(this.position.x),0,255);
+    this.r = 0;
     this.g = 0;
     this.b = random(255);
   }
@@ -38,7 +40,11 @@ class Mover {
    force2.mult(0.1);
    other.applyForce(force2);
 
+   this.isCollide = true;
+
  } else {
+
+   this.isCollide=false;
 
  }
   }
@@ -88,14 +94,74 @@ class Mover {
     fill(this.r,this.g,this.b);
     ellipse(this.position.x, this.position.y, this.radius);
   }
+
+variation(){
+  //area 1
+  if(0<this.position.x<windowWidth/2 && 0<this.position.y<windowHeight/2){
+    this.velocity.normalize();
+
+  }
+//area2
+  else if (0<this.position.x<windowWidth/2 && this.position.y>windowHeight/2) {
+
+  }
+
+  //area3
+  else if (this.position.x>windowWidth/2 && 0<this.position.y<windowHeight/2) {
+
+  }
+  //area4
+  else if (this.position.x>windowWidth/2 && this.position.y>windowHeight/2) {
+
+  }
+
 }
+}
+
+class ParticleSystem {
+
+    constructor(position) {
+        this.origin = position.copy();
+        this.particles = [];
+    }
+
+    addParticle() {
+        this.particles.push(new Mover(this.origin.x,this.origin.y,random(8,24)));
+    }
+
+    applyForce(force) {
+        for (let p of this.particles) {
+            p.applyForce(force);
+        }
+    }
+
+    applyRepeller(r) {
+        for (let p of this.particles) {
+            this.force = r.attract(p);
+            p.applyForce(this.force);
+        }
+    }
+
+    run() {
+        for (let i = this.particles.length-1; i >= 0; i--) {
+            let p = this.particles[i];
+            p.run();
+            if (p.isDone()) {
+                this.particles.splice(i, 1);
+            }
+        }
+    }
+
+}
+
 
 //attractor
 class Attractor {
   constructor(x,y) {
     this.position = createVector(x,y);
-    this.mass = 20;
+    this.mass = 100;
     this.G = 1;
+
 
     this.lifespan = 100;
     this.lifeReduction = 1;
@@ -116,18 +182,57 @@ class Attractor {
 
   attract(mover) {
     let force = p5.Vector.sub(this.position, mover.position);
-    let distance = force.setMag(5,25);
-    let strength = (this.G * this.mass * mover.mass) / (distance * distance);
-    force.setMag(strength*5);
+    let strength = (this.G * this.mass * mover.mass);
+    this.d = force.mag();
+force.normalize();
+this.d = constrain(this.d, 5, 100);
+this.f = -1.5 * strength / (this.d * this.d);
+force.mult(this.f);
+
+// console.log('a');
+    // let distance = force.setMag(5,25);
+    // let strength = (this.G * this.mass * mover.mass) / (distance * distance);
+    // force.setMag(strength*10);
 
     return force;
+
+    // this.dir = new p5.Vector.sub(this.position, mover.position);
+    //     this.d = this.dir.mag();
+    //     this.dir.normalize();
+    //     this.d = constrain(this.d, 5, 100);
+    //     this.force = -1.5 * strength / (this.d * this.d);
+    //     this.dir.mult(this.force);
+    //     return this.dir;
+    //     console.log('1');
   }
 
   display() {
     ellipseMode(CENTER);
     noStroke();
     fill(255);
-    ellipse(this.position.x, this.position.y, this.mass * 2, this.mass * 2);
+    ellipse(this.position.x, this.position.y, this.mass /50);
+  }
+
+//variation for attractor
+  variation(){
+    //area 1
+    if(0<this.position.x<windowWidth/2 && 0<this.position.y<windowHeight/2){
+      this.G =-2;
+
+    }
+//area2
+    else if (0<this.position.x<windowWidth/2 && this.position.y>windowHeight/2) {
+      this.G =1;
+    }
+
+    //area3
+    else if (this.position.x>windowWidth/2 && 0<this.position.y<windowHeight/2) {
+      this.G =-1;
+    }
+    //area4
+    else if (this.position.x>windowWidth/2 && this.position.y>windowHeight/2) {
+      this.G =2;
+    }
   }
 
 }

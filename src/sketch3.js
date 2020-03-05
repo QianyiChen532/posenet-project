@@ -1,19 +1,19 @@
 let gravity = 10;
-let movers = [];
+let system;
+
+
 let size = 5;
 let attractor = [];
 let slider = [];
 
 let poseNet=[];
 let poses = [];
-let num = 4;//num of video
+let num = 2;//num of video
 let video = [];
 
 let vnum = 1;
 let audio=[];
 let left;
-
-
 
 // Available parts are:
 // 0   nose
@@ -71,13 +71,8 @@ function setup() {
   });
 
   }
+  system = new ParticleSystem(createVector(random(windowWidth/2,1*windowWidth/2),random(7*windowHeight/20,10*windowHeight/20)));
 
-
-//   for (let i = 0; i < size; i++) {
-//     movers[i] = new Mover(windowWidth/2,windowHeight/2,random(8,24));
-// //       audLoad(0,movers[i].isCollide);
-// // console.log(movers[i].isCollide);
-//   }
 }
 
 
@@ -107,13 +102,18 @@ function vidLoad(){
 
 }
 
-function draw() {
-  for (let i = 0; i < size; i++) {
-    movers[i] = new Mover(random(windowWidth/2),windowHeight/2,random(8,24));
-//       audLoad(0,movers[i].isCollide);
-// console.log(movers[i].isCollide);
-  }
+function makeAttractor(x,y){
 
+  for (let i = 0; i < attractor.length; i++) {
+    let d = dist(attractor[i].position.x, attractor[i].position.y,x,y);
+
+  if(d > attractor[i].radius){
+      attractor.push(new Attractor(x,y, random(8, 10)));
+  }
+}
+}
+
+function draw() {
 let l = video.length;
   if (l==1){
     image(video[0], 0, 0,windowWidth/2,windowHeight/2);
@@ -140,46 +140,62 @@ let l = video.length;
 drawKeypoints(poses);
   background(0,50);
 
+  system.addParticle();
+
+   // We're applying a universal gravity.
+   let gravity = createVector(0, 0.1);
+   system.applyForce(gravity);
+
+   // fill(0,11);
+   // noStroke();
+   // rect(0, 0, width, height);
+   // Applying the repeller
+   // let repeller = new Attractor(mouseX, mouseY);
+   //
+   // system.applyRepeller(repeller);
+
+   // system.run();
+   // repeller.display();
+  //
   for (let i = 0; i < movers.length; i++) {
-    for(let a = 0; a<movers.length;a++){
+  //   for(let a = 0; a<movers.length;a++){
 
-      if(i!=a){
-        // movers[i].checkCollision(movers[a]);
-      }
-    }
-    // let mouse = createVector(mouseX,mouseY);
-    //   mover[i].acceleration = p5.Vector.sub(mouse, mover[i].position);
-
-
-    movers[i].update();
-    movers[i].display();
-      // movers[i].variation();
-
-  //       audLoad(0,movers[i].isCollide);
-  // console.log(movers[i].isCollide);
-
-
+//       if(i!=a){
+//         movers[i].checkCollision(movers[a]);
+//       }
+//     }
+//     // let mouse = createVector(mouseX,mouseY);
+//     //   mover[i].acceleration = p5.Vector.sub(mouse, mover[i].position);
+//
+//
+//     movers[i].update();
+//     movers[i].display();
+//       // movers[i].variation();
+//
+//   //       audLoad(0,movers[i].isCollide);
+//   // console.log(movers[i].isCollide);
+//
+//
     for (let j = 0; j < attractor.length; j++) {
 
       attractor[j].life();
-      attractor[j].display();
-// attractor[j].variation();
-
-
+// // attractor[j].variation();
+//
+//
       let force = attractor[j].attract(movers[i]);
       movers[i].applyForce(force);
-
-      let g = createVector(0,gravity);
-      movers[i].applyForce(g);
+//
+//       let g = createVector(0,gravity);
+//       movers[i].applyForce(g);
     }
   }
-
-  if (attractor.length > num*2){
-    attractor.splice(0,1);
-  }
-  if (movers.length > 100){
-    movers.splice(0,3);
-  }
+//
+//   if (attractor.length > num*2){
+//     attractor.splice(0,3);
+//   }
+//   if (movers.length > 100){
+//     movers.splice(0,3);
+//   }
 
 }
 
@@ -235,10 +251,7 @@ function drawKeypoints(poses) {
                   fill(255, 0, 0);
                   ellipse(x[k], y[k], 20, 20);
                   // console.log(x,y);
-                  // makeAttractor(x[k], y[k]);
-                      attractor.push(new Attractor(x[k], y[k], random(8, 10)));
-
-
+                  makeAttractor(x[k], y[k]);
                 }
 
                 // else if (partname == "rightEar") {
