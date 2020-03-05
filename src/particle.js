@@ -118,48 +118,12 @@ variation(){
 }
 }
 
-class ParticleSystem {
-
-    constructor(position) {
-        this.origin = position.copy();
-        this.particles = [];
-    }
-
-    addParticle() {
-        this.particles.push(new Mover(this.origin.x,this.origin.y,random(8,24)));
-    }
-
-    applyForce(force) {
-        for (let p of this.particles) {
-            p.applyForce(force);
-        }
-    }
-
-    applyRepeller(r) {
-        for (let p of this.particles) {
-            this.force = r.attract(p);
-            p.applyForce(this.force);
-        }
-    }
-
-    run() {
-        for (let i = this.particles.length-1; i >= 0; i--) {
-            let p = this.particles[i];
-            p.run();
-            if (p.isDone()) {
-                this.particles.splice(i, 1);
-            }
-        }
-    }
-
-}
-
 
 //attractor
 class Attractor {
   constructor(x,y) {
     this.position = createVector(x,y);
-    this.mass = 100;
+    this.mass = 20;
     this.G = 1;
 
 
@@ -210,7 +174,7 @@ force.mult(this.f);
     ellipseMode(CENTER);
     noStroke();
     fill(255);
-    ellipse(this.position.x, this.position.y, this.mass /50);
+    ellipse(this.position.x, this.position.y, this.mass );
   }
 
 //variation for attractor
