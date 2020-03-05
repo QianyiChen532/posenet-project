@@ -1,4 +1,4 @@
-let gravity = 10;
+let gravity = 0;
 let movers = [];
 let size = 5;
 let attractor = [];
@@ -72,12 +72,11 @@ function setup() {
 
   }
 
-
-//   for (let i = 0; i < size; i++) {
-//     movers[i] = new Mover(windowWidth/2,windowHeight/2,random(8,24));
-// //       audLoad(0,movers[i].isCollide);
-// // console.log(movers[i].isCollide);
-//   }
+  for (let i = 0; i < size; i++) {
+    movers[i] = new Mover(windowWidth/2,windowHeight/2,random(8,24));
+//       audLoad(0,movers[i].isCollide);
+// console.log(movers[i].isCollide);
+  }
 }
 
 
@@ -108,11 +107,7 @@ function vidLoad(){
 }
 
 function draw() {
-  for (let i = 0; i < size; i++) {
-    movers[i] = new Mover(random(windowWidth/2),windowHeight/2,random(8,24));
-//       audLoad(0,movers[i].isCollide);
-// console.log(movers[i].isCollide);
-  }
+
 
 let l = video.length;
   if (l==1){
@@ -140,11 +135,12 @@ let l = video.length;
 drawKeypoints(poses);
   background(0,50);
 
+attractor.push(new Attractor(mouseX,mouseY));
   for (let i = 0; i < movers.length; i++) {
     for(let a = 0; a<movers.length;a++){
 
       if(i!=a){
-        // movers[i].checkCollision(movers[a]);
+        movers[i].checkCollision(movers[a]);
       }
     }
     // let mouse = createVector(mouseX,mouseY);
@@ -154,10 +150,6 @@ drawKeypoints(poses);
     movers[i].update();
     movers[i].display();
       // movers[i].variation();
-
-  //       audLoad(0,movers[i].isCollide);
-  // console.log(movers[i].isCollide);
-
 
     for (let j = 0; j < attractor.length; j++) {
 
@@ -185,16 +177,6 @@ drawKeypoints(poses);
 
 // Draw ellipses over the detected keypoints
 function drawKeypoints(poses) {
-
-      // console.log(pose.pose);
-      // if (poses != undefined ) {
-      //   poses.forEach((p,k) =>{console.log(p,k);}
-      //
-      //     // pose.pose.keypoints.forEach(keypoint => {sth.forEach(keypoint =>
-      //     //
-      //     //   })
-      //     // })
-      //   );
 
         for (let k = 0; k<poses.length;k++){
         if (poses[k] != undefined ) {
@@ -234,12 +216,9 @@ function drawKeypoints(poses) {
                   noStroke();
                   fill(255, 0, 0);
                   ellipse(x[k], y[k], 20, 20);
-                  // console.log(x,y);
-                  // makeAttractor(x[k], y[k]);
-                      attractor.push(new Attractor(x[k], y[k], random(8, 10)));
 
-
-                }
+                //update attractor position based on x[k]y[k]
+                //how to match different points in this array?
 
                 // else if (partname == "rightEar") {
                 //   // console.log('2');
@@ -257,3 +236,4 @@ function drawKeypoints(poses) {
         }
     }
     }
+  }
