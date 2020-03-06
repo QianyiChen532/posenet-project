@@ -32,7 +32,7 @@ class Mover {
   this.applyForce(separateForce);
   this.applyForce(seekForce);
 
-  console.log('2');
+
   }
 
   applyForce(force) {
@@ -77,7 +77,7 @@ class Mover {
     // Steering = Desired minus velocity
     let steer = p5.Vector.sub(desired,this.velocity);
     steer.limit(this.maxforce);
-    console.log(1);
+    
     return steer;
   }
 
