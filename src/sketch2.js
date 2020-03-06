@@ -1,18 +1,19 @@
 let gravity = 0;
 let movers = [];
-let size = 5;
+let size = 15;
 let attractor = [];
 let slider = [];
 
 let poseNet=[];
 let poses = [];
-let num = 4;//num of video
+let num = 2;//num of video
 let video = [];
 
 let vnum = 1;
 let audio=[];
 let left;
 
+let seekP;
 
 
 // Available parts are:
@@ -46,6 +47,7 @@ function preload(){
 }
 
 function setup() {
+  background(0);
   createCanvas(windowWidth,windowHeight);
   frameRate(60);
 
@@ -108,7 +110,6 @@ function vidLoad(){
 
 function draw() {
 
-
 let l = video.length;
   if (l==1){
     image(video[0], 0, 0,windowWidth/2,windowHeight/2);
@@ -131,16 +132,18 @@ let l = video.length;
       image(video[3], windowWidth/2,0, windowWidth/2,windowHeight/2);
   }
 
+  background(0,0,0,50);
+
 
 drawKeypoints(poses);
-  background(0,50);
 
-attractor.push(new Attractor(mouseX,mouseY));
+
+// attractor.push(new Attractor(mouseX,mouseY));
   for (let i = 0; i < movers.length; i++) {
     for(let a = 0; a<movers.length;a++){
 
       if(i!=a){
-        movers[i].checkCollision(movers[a]);
+        // movers[i].checkCollision(movers[a]);
       }
     }
     // let mouse = createVector(mouseX,mouseY);
@@ -149,21 +152,26 @@ attractor.push(new Attractor(mouseX,mouseY));
 
     movers[i].update();
     movers[i].display();
+
+    if(seekP!=undefined){
+      movers[i].applyBehaviors(movers,seekP);
+    }
+
       // movers[i].variation();
 
-    for (let j = 0; j < attractor.length; j++) {
-
-      attractor[j].life();
-      attractor[j].display();
-// attractor[j].variation();
-
-
-      let force = attractor[j].attract(movers[i]);
-      movers[i].applyForce(force);
-
-      let g = createVector(0,gravity);
-      movers[i].applyForce(g);
-    }
+//     for (let j = 0; j < attractor.length; j++) {
+//
+//       attractor[j].life();
+//       attractor[j].display();
+// // attractor[j].variation();
+//
+//
+//       let force = attractor[j].attract(movers[i]);
+//       movers[i].applyForce(force);
+//
+//       let g = createVector(0,gravity);
+//       movers[i].applyForce(g);
+//     }
   }
 
   if (attractor.length > num*2){
@@ -216,6 +224,7 @@ function drawKeypoints(poses) {
                   noStroke();
                   fill(255, 0, 0);
                   ellipse(x[k], y[k], 20, 20);
+                  seekP = createVector(x[k], y[k]);
 
                 //update attractor position based on x[k]y[k]
                 //how to match different points in this array?
