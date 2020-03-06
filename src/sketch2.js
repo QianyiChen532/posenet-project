@@ -149,7 +149,7 @@ function draw() {
     for(let a = 0; a<movers.length;a++){
 
       if(i!=a){
-        // movers[i].checkCollision(movers[a]);
+        movers[i].checkCollision(movers[a]);
       }
     }
     // let mouse = createVector(mouseX,mouseY);

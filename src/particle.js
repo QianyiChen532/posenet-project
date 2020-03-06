@@ -171,6 +171,7 @@ life(){
 }
 }
 
+<<<<<<< HEAD
 
 //movers
 // class Mover {
@@ -292,6 +293,8 @@ life(){
 // }
 // }
 
+=======
+>>>>>>> 2c13ea0bd8f20c244a77c810b6778337860fd20c
 
 //attractor
 class Attractor {
@@ -348,7 +351,11 @@ force.mult(this.f);
     ellipseMode(CENTER);
     noStroke();
     fill(255);
+<<<<<<< HEAD
     ellipse(this.position.x, this.position.y, this.mass);
+=======
+    ellipse(this.position.x, this.position.y, this.mass );
+>>>>>>> 2c13ea0bd8f20c244a77c810b6778337860fd20c
   }
 
 //letiation for attractor
