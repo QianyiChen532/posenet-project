@@ -259,8 +259,8 @@ function drawSkeleton(poses) {
       for (let i = 0; i < poses[k].length; i++) {
         for (let j=0; j< poses[k][i].skeleton.length; j++) {
           console.log(poses[k][i].skeleton[j]);
-          if (poses[k][i].skeleton[j] != undefined & poses[k][i].skeleton[j].length >1){
-            let p1 = 30+poses[k][i].skeleton[j][0].position;
+          if (poses[k][i].skeleton[j][0].position != undefined & poses[k][i].skeleton[j][1].position != undefined){
+            let p1 = poses[k][i].skeleton[j][0].position;
             let p2 = poses[k][i].skeleton[j][1].position;
 
             let x1=[];
@@ -299,11 +299,14 @@ function drawSkeleton(poses) {
                         x2[3]=z0+windowWidth/2;
                         y2[3]=w0;
                       }
-
+          if(x1[k] != undefined & y1[k] != undefined & x2[k] != undefined & y2[k] != undefined){
             stroke(255, 255, 255,50);
             strokeWeight(10);
             line(x1[k], y1[k], x2[k],y2[k]);
+          console.log(x1[1], y1[1], x2[1],y2[1]);
           }
+          }
+
 
         }
 
