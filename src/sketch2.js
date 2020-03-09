@@ -1,20 +1,19 @@
 let gravity = 0;
 let movers = [];
-let size = 15;
+let size = 30;
 let attractor = [];
 let slider = [];
 
 let poseNet=[];
 let poses = [];
-let num = 4;//num of video
+let num = 1;//num of video
 let video = [];
 
-let vnum = 1;
-let audio=[];
-let left;
-
 let seekP;
+let points = [];
+let hintimg;
 
+let hintshow = true;
 
 // Available parts are:
 // 0   nose
@@ -34,29 +33,20 @@ let seekP;
 // 14	rightKnee
 // 15	leftAnkle
 // 16	rightAnkle
-function preload(){
-  for(let i = 0; i<vnum;i++){
-    audio[i] = loadSound('asset/'+i+'.mp3');
-  }
-  // for (let i= 0;i< num-1;i++){
-  //   video[i] = createVideo('asset/'+i+'.mov',vidLoad);
-  // }
-  // if(num>1){
-  //   video[num-1] = createCapture(VIDEO);
-  // }
-}
 
 function setup() {
+
+  hintimg = loadImage('asset/hint.png');
   background(0);
   createCanvas(windowWidth,windowHeight);
-  frameRate(60);
+  frameRate(30);
 
-  for (let i= 0;i< num-1;i++){
+  video[0] = createCapture(VIDEO);
+
+  for (let i= 1;i< num;i++){
     video[i] = createVideo('asset/'+i+'.mov',vidLoad);
   }
-  if(num>=1){
-    video[num-1] = createCapture(VIDEO);
-  }
+
 
   for (let i= 0;i< num;i++){
 
@@ -76,8 +66,7 @@ function setup() {
 
   for (let i = 0; i < size; i++) {
     movers[i] = new Mover(windowWidth/2,windowHeight/2,random(8,24));
-    //       audLoad(0,movers[i].isCollide);
-    // console.log(movers[i].isCollide);
+
   }
 }
 
@@ -86,6 +75,18 @@ function modelReady() {
   console.log("Model Ready!");
 }
 
+function keyPressed(){
+if(key == 'w'){
+  num++;
+}
+else if (key == 'z'){
+  num--;
+  console.log(num);
+}
+else if (key == 'd'){
+  hintshow = false;
+}
+}
 
 function audLoad(i,b){
 
@@ -109,7 +110,9 @@ function vidLoad(){
 }
 
 function draw() {
-  let a = map(mouseX,0,windowWidth,0,255);
+
+
+  let a = map(mouseX,windowWidth,0,0,255);
 
   let l = video.length;
   if (l==1){
@@ -118,20 +121,26 @@ function draw() {
 
   }
   else if(l==2){
+
     tint(255, a);
     image(video[0], 0, 0,windowWidth/2,windowHeight/2);
     image(video[1], windowWidth/2,windowHeight/2, windowWidth/2,windowHeight/2);
 
   }
   else if(l==3){
+
+
     tint(255, a);
     image(video[0], 0, 0,windowWidth/2,windowHeight/2);
+
     image(video[1], windowWidth/2,windowHeight/2, windowWidth/2,windowHeight/2);
     image(video[2], 0,windowHeight/2, windowWidth/2,windowHeight/2);
+
   }
   else {
     tint(255, a);
     image(video[0], 0, 0,windowWidth/2,windowHeight/2);
+
     image(video[1], windowWidth/2,windowHeight/2, windowWidth/2,windowHeight/2);
     image(video[2], 0,windowHeight/2, windowWidth/2,windowHeight/2);
     image(video[3], windowWidth/2,0, windowWidth/2,windowHeight/2);
@@ -140,53 +149,38 @@ function draw() {
   background(0,0,0,90);
 
 
-  drawKeypoints(poses);
-  drawSkeleton(poses);
-
-
-  // attractor.push(new Attractor(mouseX,mouseY));
   for (let i = 0; i < movers.length; i++) {
+    let m = movers[i];
     for(let a = 0; a<movers.length;a++){
 
       if(i!=a){
-        movers[i].checkCollision(movers[a]);
+        m.checkCollision(movers[a]);
       }
     }
-    // let mouse = createVector(mouseX,mouseY);
-    //   mover[i].acceleration = p5.Vector.sub(mouse, mover[i].position);
 
-
-    movers[i].update();
-    movers[i].display();
-
-    if(seekP!=undefined){
-      movers[i].applyBehaviors(movers,seekP);
+    m.update();
+    m.display();
+    if(key == 'a'){
+      m.showlines = true;
+    }
+    if(key == 's'){
+      m.showlines = false;
+    }
+    console.log(movers[i].showlines);
+      for (let j=0; j<points.length; j++) {
+        m.moveTo(points[j]);
     }
 
-    // movers[i].variation();
-
-    //     for (let j = 0; j < attractor.length; j++) {
-    //
-    //       attractor[j].life();
-    //       attractor[j].display();
-    // // attractor[j].variation();
-    //
-    //
-    //       let force = attractor[j].attract(movers[i]);
-    //       movers[i].applyForce(force);
-    //
-    //       let g = createVector(0,gravity);
-    //       movers[i].applyForce(g);
-    //     }
+    if(seekP!=undefined){
+      m.applyBehaviors(movers,seekP);
+    }
   }
 
-  if (attractor.length > num*2){
-    attractor.splice(0,1);
+  drawKeypoints(poses);
+  drawSkeleton(poses);
+  if (hintshow){
+    image(hintimg,windowWidth/2-140,windowHeight/2-110);
   }
-  if (movers.length > 50){
-    movers.splice(0,3);
-  }
-
 }
 
 // Draw ellipses over the detected keypoints
@@ -199,13 +193,15 @@ function drawKeypoints(poses) {
 
           let partname = poses[k][i].pose.keypoints[j].part;
 
-          let score = poses[k][i].pose.keypoints[j].score;
+          let point = poses[k][i].pose.keypoints[j];
+
+          let score = point.score;
 
           let x = [];
           let y = [];
-          let x0 = 30+poses[k][i].pose.keypoints[j].position.x;
+          let x0 = poses[k][i].pose.keypoints[j].position.x;
           let y0 = poses[k][i].pose.keypoints[j].position.y;
-
+          // console.log(x0,y0);
 
           if(k==0){
             x[0]=x0;
@@ -223,46 +219,49 @@ function drawKeypoints(poses) {
             y[3]=y0;
           }
 
+          // noStroke();
+          // fill(0, 255, 0);
+          // ellipse(x[k], y[k], 3, 3);
+
+          if (score > 0.1) {
+            points[j] = createVector(x[k], y[k]);
+
+          } else {
+            points[j] = createVector(-100,-100); // move the point away
+          }
 
           if (score > 0.3) {
             if (partname == "leftWrist" || partname == "rightWrist") {
-
               noStroke();
+
               fill(255, 0, 0);
-              ellipse(x[k], y[k], 20, 20);
+              ellipse(x[k], y[k], 10, 10);
               seekP = createVector(x[k], y[k]);
-
-              //update attractor position based on x[k]y[k]
-              //how to match different points in this array?
             }
-            // else if (partname == "leftKnee" ) {
-            //   // console.log('2');
-            //   noStroke();
-            //   fill(255, 255, 0);
-            //
-            //   ellipse(x[k], y[k], 10, 10);
-            //   movers.push(new Mover(x[k], y[k], random(8, 24)));
-            // }
+            else if (partname == "leftEye" || partname == "rightEye"||partname == 'nose') {
+              stroke(200);
+              noFill();
+              ellipse(x[k], y[k], 10, 10);
           }
-
         }
       }
-
     }
   }
+}
 
 }
 
 function drawSkeleton(poses) {
   for (let k = 0; k<poses.length;k++){
+    // console.log(poses);
     if (poses[k] != undefined ) {
       for (let i = 0; i < poses[k].length; i++) {
         for (let j=0; j< poses[k][i].skeleton.length; j++) {
-          console.log(poses[k][i].skeleton[j]);
+          // console.log(poses[k][i].skeleton[j]);
           if (poses[k][i].skeleton[j][0].position != undefined & poses[k][i].skeleton[j][1].position != undefined){
             let p1 = poses[k][i].skeleton[j][0].position;
             let p2 = poses[k][i].skeleton[j][1].position;
-
+            // console.log(p1,p2);
             let x1=[];
             let x2=[];
             let y1=[];
@@ -273,43 +272,37 @@ function drawSkeleton(poses) {
             let z0 = p2.x;
             let w0 = p2.y;
 
-                      if(k==0){
-                        x1[0]=x0;
-                        y2[0]=y0;
-                        x2[0]=z0;
-                        y2[0]=w0;
-                      }else if(k==1){
+            // console.log(x1,x2,y1,y2);
+            // if(x1[k] != undefined & y1[k] != undefined & x2[k] != undefined & y2[k] != undefined){
 
-                        x1[1]=x0+windowWidth/2;
-                        y2[1]=y0+windowHeight/2;
-                        x2[1]=z0+windowWidth/2;
-                        y2[1]=w0+windowHeight/2;
-                      }
-                      else if(k==2){
-                        x1[2]=x0;
-                        y2[2]=y0+windowHeight/2;
-                        x2[2]=z0;
-                        y2[2]=w0+windowHeight/2;
 
-                      }
-                      else if(k==3){
+            if(k==0){
+              push();
+              translate(0,0);
+            }else if(k==1){
+                push();
+              translate(windowWidth/2,windowHeight/2);
 
-                        x1[3]=x0+windowWidth/2;
-                        y2[3]=y0;
-                        x2[3]=z0+windowWidth/2;
-                        y2[3]=w0;
-                      }
-          if(x1[k] != undefined & y1[k] != undefined & x2[k] != undefined & y2[k] != undefined){
-            stroke(255, 255, 255,50);
-            strokeWeight(10);
-            line(x1[k], y1[k], x2[k],y2[k]);
-          console.log(x1[1], y1[1], x2[1],y2[1]);
+            }
+            else if(k==2){
+                push();
+              translate(0,windowHeight/2);
+
+            }
+            else if(k==3){
+                push();
+              translate(windowWidth/2,0,);
+            }
+            colorMode(HSB);
+            let c = color(k*70,(k+1)*20,60,0.8);
+            stroke(c);
+
+            strokeWeight(2);
+            line(p1.x,p1.y,p2.x,p2.y);
+            pop();
+            // }
           }
-          }
-
-
         }
-
       }
 
     }
