@@ -15,7 +15,7 @@ let hintimg;
 
 let hintshow = true;
 
-let num;
+let num = 1;
 // Available parts are:
 // 0   nose
 // 1	leftEye
