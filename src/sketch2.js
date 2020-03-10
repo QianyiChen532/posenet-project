@@ -36,8 +36,8 @@ let hintshow = true;
 // 16	rightAnkle
 
 
-function getQueryString(name) {
-  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+function getQueryString(num) {
+  var reg = new RegExp("(^|&)" + num + "=([^&]*)(&|$)", "i");
   var r = decodeURI(window.location.search).substr(1).match(reg);
   if(r != null) return (r[2]);
   return null;
