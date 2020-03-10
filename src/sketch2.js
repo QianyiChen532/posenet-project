@@ -6,7 +6,7 @@ let slider = [];
 
 let poseNet=[];
 let poses = [];
-let num = 1;//num of video
+// let num;//num of video
 let video = [];
 
 let seekP;
@@ -15,6 +15,7 @@ let hintimg;
 
 let hintshow = true;
 
+let num;
 // Available parts are:
 // 0   nose
 // 1	leftEye
@@ -33,9 +34,14 @@ let hintshow = true;
 // 14	rightKnee
 // 15	leftAnkle
 // 16	rightAnkle
+// function preload(){
+//   num = setNum();
+//   console.log(num);
+// }
 
 function setup() {
-
+  num = echo $_GET['num']; // output tom
+console.log(num);
   hintimg = loadImage('asset/hint.png');
   background(0);
   createCanvas(windowWidth,windowHeight);
@@ -64,10 +70,12 @@ function setup() {
 
   }
 
+if(num){
   for (let i = 0; i < size; i++) {
     movers[i] = new Mover(windowWidth/2,windowHeight/2,random(8,24));
-
   }
+}
+
 }
 
 
