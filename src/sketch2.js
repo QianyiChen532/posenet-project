@@ -15,7 +15,7 @@ let hintimg;
 
 let hintshow = true;
 
-let num = 2;
+// let num = 4;
 // Available parts are:
 // 0   nose
 // 1	leftEye
@@ -34,14 +34,20 @@ let num = 2;
 // 14	rightKnee
 // 15	leftAnkle
 // 16	rightAnkle
-// function preload(){
-//   num = setNum();
-//   console.log(num);
-// }
+
+
+function getQueryString(name) {
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+  var r = decodeURI(window.location.search).substr(1).match(reg);
+  if(r != null) return (r[2]);
+  return null;
+}
 
 function setup() {
-//   num = echo $_GET['num']; // output tom
-// console.log(num);
+
+let num=getQueryString('num');
+	console.log(num);
+
   hintimg = loadImage('asset/hint.png');
   background(0);
   createCanvas(windowWidth,windowHeight);
@@ -55,7 +61,6 @@ function setup() {
 
 
   for (let i= 0;i< num;i++){
-
 
     video[i].size();
     video[i].hide();
@@ -136,7 +141,6 @@ function draw() {
 
   }
   else if(l==3){
-
 
     tint(255, a);
     image(video[0], 0, 0,windowWidth/2,windowHeight/2);
@@ -227,6 +231,7 @@ function drawKeypoints(poses) {
             y[3]=y0;
           }
 
+
           // noStroke();
           // fill(0, 255, 0);
           // ellipse(x[k], y[k], 3, 3);
@@ -235,16 +240,20 @@ function drawKeypoints(poses) {
             points[j] = createVector(x[k], y[k]);
 
           } else {
-            points[j] = createVector(-100,-100); // move the point away
+            points[j] = createVector(-1000,-1000); // move the point away
           }
 
-          if (score > 0.3) {
+          if (score > 0.1) {
             if (partname == "leftWrist" || partname == "rightWrist") {
               noStroke();
 
               fill(255, 0, 0);
               ellipse(x[k], y[k], 10, 10);
-              seekP = createVector(x[k], y[k]);
+
+              seekP=createVector(x[k], y[k]);
+
+              // seekP=createVector(x[3], y[3]);
+              console.log(x,y);
             }
             else if (partname == "leftEye" || partname == "rightEye"||partname == 'nose') {
               stroke(200);

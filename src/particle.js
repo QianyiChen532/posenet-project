@@ -62,7 +62,7 @@ class Mover {
 
   moveTo(target){
     let vec = p5.Vector.sub(target,this.position);
-    if (vec.mag()<100){
+    if (vec.mag()<50){
       vec.mult(0.1);
       this.applyForce(vec);
 if(this.showlines == true){
