@@ -42,7 +42,7 @@ let num = 1;
 function setup() {
 //   num = echo $_GET['num']; // output tom
 // console.log(num);
-  hintimg = loadImage('./asset/hint.png');
+  hintimg = loadImage('../asset/hint.png');
   background(0);
   createCanvas(windowWidth,windowHeight);
   frameRate(30);
@@ -50,7 +50,7 @@ function setup() {
   video[0] = createCapture(VIDEO);
 
   for (let i= 1;i< num;i++){
-    video[i] = createVideo('./asset/'+i+'.mov',vidLoad);
+    video[i] = createVideo('../asset/'+i+'.mov',vidLoad);
   }
 
 
