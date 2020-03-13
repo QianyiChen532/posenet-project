@@ -21,9 +21,17 @@ h4{
 
 .title{
   text-align: center;
-justify-content: center;
-position: relative;
-top: 300px;
+  justify-content: center;
+  position: relative;
+  top: 400px;
+}
+
+
+.btns{
+  justify-content: center;
+  position: relative;
+  top: 400px;
+  display: inline-flex;
 }
 
 .btn{
@@ -42,11 +50,4 @@ top: 300px;
 a{
   color: aliceblue;
   text-decoration: none;
-}
-
-.btns{
-  justify-content: center;
-  position: relative;
-  top: 300px;
-  display: inline-flex;
 }

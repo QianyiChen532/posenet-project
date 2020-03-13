@@ -9,9 +9,10 @@ let poses = [];
 // let num;//num of video
 let video = [];
 
-let seekP;
+let seekP=[];
 let points = [];
 let hintimg;
+let p=[];
 
 let hintshow = true;
 
@@ -45,8 +46,8 @@ function getQueryString(num) {
 
 function setup() {
 
-let num=getQueryString('num');
-	console.log(num);
+  let num=getQueryString('num');
+  console.log(num);
 
   hintimg = loadImage('asset/hint.png');
   background(0);
@@ -59,7 +60,6 @@ let num=getQueryString('num');
     video[i] = createVideo('asset/'+i+'.mov',vidLoad);
   }
 
-
   for (let i= 0;i< num;i++){
 
     video[i].size();
@@ -67,66 +67,62 @@ let num=getQueryString('num');
 
     //for posenet
     poseNet[i] = ml5.poseNet(video[i], modelReady);
-    poseNet.forEach((pn, i) => {
-      pn.on('pose', (results) => {
-        poses[i] = results;
-      });
+  }
+
+  //already loop through
+  poseNet.forEach((pn, i) => {
+    pn.on('pose', (results) => {
+      poses[i] = results;
     });
+  });
 
+  if(num){
+    for (let i = 0; i < size; i++) {
+      movers[i] = new Mover(windowWidth/2,windowHeight/2,random(8,24));
+    }
   }
 
-if(num){
-  for (let i = 0; i < size; i++) {
-    movers[i] = new Mover(windowWidth/2,windowHeight/2,random(8,24));
-  }
 }
-
-}
-
 
 function modelReady() {
   console.log("Model Ready!");
 }
 
 function keyPressed(){
-if(key == 'w'){
-  num++;
-}
-else if (key == 'z'){
-  num--;
-  console.log(num);
-}
-else if (key == 'd'){
-  hintshow = false;
-}
-}
-
-function audLoad(i,b){
-
-  if (audio[i].isPlaying() && b==false){
-    audio[i].stop();
-  }else if (b==true){
-    audio[i].play();
-    console.log('play');
+  if(key == 'w'){
+    num++;
   }
-
+  else if (key == 'z'){
+    num--;
+    console.log(num);
+  }
+  else if (key == 'd'){
+    hintshow = false;
+  }
 }
+//
+// function audLoad(i,b){
+//
+//   if (audio[i].isPlaying() && b==false){
+//     audio[i].stop();
+//   }else if (b==true){
+//     audio[i].play();
+//     console.log('play');
+//   }
+//
+// }
 
 function vidLoad(){
   for (let i = 0; i< video.length;i++){
-    // video[i].stop();
-    // video[i].play();
     video[i].loop();
-
   }
-
 }
 
 function draw() {
 
-
   let a = map(mouseX,windowWidth,0,0,255);
 
+  //for display img
   let l = video.length;
   if (l==1){
     tint(255, a);
@@ -144,7 +140,6 @@ function draw() {
 
     tint(255, a);
     image(video[0], 0, 0,windowWidth/2,windowHeight/2);
-
     image(video[1], windowWidth/2,windowHeight/2, windowWidth/2,windowHeight/2);
     image(video[2], 0,windowHeight/2, windowWidth/2,windowHeight/2);
 
@@ -152,15 +147,17 @@ function draw() {
   else {
     tint(255, a);
     image(video[0], 0, 0,windowWidth/2,windowHeight/2);
-
     image(video[1], windowWidth/2,windowHeight/2, windowWidth/2,windowHeight/2);
     image(video[2], 0,windowHeight/2, windowWidth/2,windowHeight/2);
     image(video[3], windowWidth/2,0, windowWidth/2,windowHeight/2);
   }
 
   background(0,0,0,90);
+  if (hintshow){
+    image(hintimg,windowWidth/2-140,windowHeight/2-110);
+  }
 
-
+  //movers and force
   for (let i = 0; i < movers.length; i++) {
     let m = movers[i];
     for(let a = 0; a<movers.length;a++){
@@ -179,41 +176,67 @@ function draw() {
       m.showlines = false;
     }
     console.log(movers[i].showlines);
-      for (let j=0; j<points.length; j++) {
-        m.moveTo(points[j]);
+    for (let j=0; j<points.length; j++) {
+      if(points[j]!=undefined){
+      m.moveTo(points[j]);
+      // console.log(p);
+      // stroke(200,0,255);
+      // noFill();
+      // ellipse(p[j].x, p[j].y, 10, 10);
+      // console.log(points);
+    }
+  }
+    // console.log(seekP);
+
+    for(let i = 0;i<seekP.length;i++){
+      if(seekP[i]!=undefined){
+        m.applyBehaviors(movers,seekP[i]);
+      }
     }
 
-    if(seekP!=undefined){
-      m.applyBehaviors(movers,seekP);
-    }
   }
 
   drawKeypoints(poses);
   drawSkeleton(poses);
-  if (hintshow){
-    image(hintimg,windowWidth/2-140,windowHeight/2-110);
-  }
 }
 
 // Draw ellipses over the detected keypoints
 function drawKeypoints(poses) {
+  let x = [];
+  let y = [];
+  // let p = [];
+//p p[0][o]pose.keypoint p01
 
+  // console.log('drawKeypoints')
   for (let k = 0; k<poses.length;k++){
+
     if (poses[k] != undefined ) {
+      console.log(poses);
       for (let i = 0; i < poses[k].length; i++) {
+
+        // p = poses[k][i].pose.keypoints;
+        // let a = p[i].position.x
+        // p[i].position.y
+        // noStroke();
+        //
+        // fill(255, 0, 0);
+        // ellipse(x[k], y[k], 10, 10);
+        // console.log(p);
         for (let j=0; j< poses[k][i].pose.keypoints.length; j++) {
 
-          let partname = poses[k][i].pose.keypoints[j].part;
-
           let point = poses[k][i].pose.keypoints[j];
-
+          let partname = point.part;
           let score = point.score;
 
-          let x = [];
-          let y = [];
-          let x0 = poses[k][i].pose.keypoints[j].position.x;
-          let y0 = poses[k][i].pose.keypoints[j].position.y;
+          // console.log(point);
+          // stroke(200,0,255);
+          // noFill();
+          // ellipse(x[k], y[k], 10, 10);
+
+          let x0 = point.position.x;
+          let y0 = point.position.y;
           // console.log(x0,y0);
+          // console.log(k, poses[k]);
 
           if(k==0){
             x[0]=x0;
@@ -231,15 +254,20 @@ function drawKeypoints(poses) {
             y[3]=y0;
           }
 
-
-          // noStroke();
-          // fill(0, 255, 0);
-          // ellipse(x[k], y[k], 3, 3);
-
           if (score > 0.1) {
-            points[j] = createVector(x[k], y[k]);
+
+            points[j] = createVector(x[k],y[k]);
+            console.log(x);
+          // console.log(points);
+            // console.log(points[j]);
+            // stroke(200,0,255);
+            // noFill();
+            // ellipse(x[k], y[k], 10, 10);
+// for k i j do loopp[k][i][j] = createVector
+//             points 1...j for one person
 
           } else {
+            p[k] = 0;
             points[j] = createVector(-1000,-1000); // move the point away
           }
 
@@ -250,25 +278,31 @@ function drawKeypoints(poses) {
               fill(255, 0, 0);
               ellipse(x[k], y[k], 10, 10);
 
-              seekP=createVector(x[k], y[k]);
+              seekP[k]=createVector(x[k], y[k]);
 
-              // seekP=createVector(x[3], y[3]);
-              console.log(x,y);
             }
             else if (partname == "leftEye" || partname == "rightEye"||partname == 'nose') {
               stroke(200);
               noFill();
               ellipse(x[k], y[k], 10, 10);
+            }
+          }
+          else{
+            let offset = 50;
+            seekP[k] = createVector(random(windowWidth/2-offset,windowWidth/2+offset),random(windowHeight/2-offset,windowHeight/2+offset));
           }
         }
       }
     }
   }
-}
 
 }
 
 function drawSkeleton(poses) {
+  let x1=[];
+  let x2=[];
+  let y1=[];
+  let y2=[];
   for (let k = 0; k<poses.length;k++){
     // console.log(poses);
     if (poses[k] != undefined ) {
@@ -279,35 +313,28 @@ function drawSkeleton(poses) {
             let p1 = poses[k][i].skeleton[j][0].position;
             let p2 = poses[k][i].skeleton[j][1].position;
             // console.log(p1,p2);
-            let x1=[];
-            let x2=[];
-            let y1=[];
-            let y2=[];
+
 
             let x0 = p1.x;
             let y0 = p1.y;
             let z0 = p2.x;
             let w0 = p2.y;
 
-            // console.log(x1,x2,y1,y2);
-            // if(x1[k] != undefined & y1[k] != undefined & x2[k] != undefined & y2[k] != undefined){
-
-
             if(k==0){
               push();
               translate(0,0);
             }else if(k==1){
-                push();
+              push();
               translate(windowWidth/2,windowHeight/2);
 
             }
             else if(k==2){
-                push();
+              push();
               translate(0,windowHeight/2);
 
             }
             else if(k==3){
-                push();
+              push();
               translate(windowWidth/2,0,);
             }
             colorMode(HSB);
@@ -317,7 +344,7 @@ function drawSkeleton(poses) {
             strokeWeight(2);
             line(p1.x,p1.y,p2.x,p2.y);
             pop();
-            // }
+
           }
         }
       }

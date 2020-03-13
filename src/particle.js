@@ -62,10 +62,11 @@ class Mover {
 
   moveTo(target){
     let vec = p5.Vector.sub(target,this.position);
-    if (vec.mag()<50){
+    if (vec.mag()<100){
       vec.mult(0.1);
       this.applyForce(vec);
 if(this.showlines == true){
+  console.log(1);
   stroke(255,70);
   strokeWeight(1);
   line(this.position.x, this.position.y,target.x, target.y);
