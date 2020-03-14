@@ -23,14 +23,14 @@ h4{
   text-align: center;
   justify-content: center;
   position: relative;
-  top: 400px;
+  top: 300px;
 }
 
 
 .btns{
   justify-content: center;
   position: relative;
-  top: 400px;
+  top: 300px;
   display: inline-flex;
 }
 

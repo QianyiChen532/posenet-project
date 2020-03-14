@@ -52,7 +52,7 @@ class Mover {
     let separateForce = this.separate(movers);
   let seekForce = this.seek(force);
 
-  separateForce.mult(2);
+  separateForce.mult(3);
   seekForce.mult(1);
 
   this.applyForce(separateForce);
@@ -66,7 +66,7 @@ class Mover {
       vec.mult(0.1);
       this.applyForce(vec);
 if(this.showlines == true){
-  console.log(1);
+  console.log('move');
   stroke(255,70);
   strokeWeight(1);
   line(this.position.x, this.position.y,target.x, target.y);

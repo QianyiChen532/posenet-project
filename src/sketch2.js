@@ -120,7 +120,7 @@ function vidLoad(){
 
 function draw() {
 
-  let a = map(mouseX,windowWidth,0,0,255);
+  let a = map(mouseX,0,windowWidth,0,255);
 
   //for display img
   let l = video.length;
@@ -151,8 +151,8 @@ function draw() {
     image(video[2], 0,windowHeight/2, windowWidth/2,windowHeight/2);
     image(video[3], windowWidth/2,0, windowWidth/2,windowHeight/2);
   }
+  background(0,0,0,95);
 
-  background(0,0,0,90);
   if (hintshow){
     image(hintimg,windowWidth/2-140,windowHeight/2-110);
   }
@@ -211,7 +211,7 @@ function drawKeypoints(poses) {
   for (let k = 0; k<poses.length;k++){
 
     if (poses[k] != undefined ) {
-      console.log(poses);
+      // console.log(poses);
       for (let i = 0; i < poses[k].length; i++) {
 
         // p = poses[k][i].pose.keypoints;
@@ -255,9 +255,10 @@ function drawKeypoints(poses) {
           }
 
           if (score > 0.1) {
+            p[i] = points;
+            // console.log(p[i]);
 
-            points[j] = createVector(x[k],y[k]);
-            console.log(x);
+            // console.log(x);
           // console.log(points);
             // console.log(points[j]);
             // stroke(200,0,255);
@@ -267,8 +268,8 @@ function drawKeypoints(poses) {
 //             points 1...j for one person
 
           } else {
-            p[k] = 0;
-            points[j] = createVector(-1000,-1000); // move the point away
+            p[i] = 0;
+            // points[j] = createVector(-1000,-1000); // move the point away
           }
 
           if (score > 0.1) {
@@ -279,6 +280,7 @@ function drawKeypoints(poses) {
               ellipse(x[k], y[k], 10, 10);
 
               seekP[k]=createVector(x[k], y[k]);
+              points[k] = createVector(x[k],y[k]);
 
             }
             else if (partname == "leftEye" || partname == "rightEye"||partname == 'nose') {
@@ -287,10 +289,10 @@ function drawKeypoints(poses) {
               ellipse(x[k], y[k], 10, 10);
             }
           }
-          else{
-            let offset = 50;
-            seekP[k] = createVector(random(windowWidth/2-offset,windowWidth/2+offset),random(windowHeight/2-offset,windowHeight/2+offset));
-          }
+          // else{
+          //   let offset = 200;
+          //   seekP[k] = createVector(random(windowWidth/2-offset,windowWidth/2+offset),random(windowHeight/2-offset,windowHeight/2+offset));
+          // }
         }
       }
     }
