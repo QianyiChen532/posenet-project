@@ -3,7 +3,8 @@
 ### Movement Practice and Physical Computation - PoseNet Project
 ### NYUSH Spring 2020
 
-[1](https://github.com/QianyiChen532/posenet-project/tree/master/img)
+![1](https://github.com/QianyiChen532/posenet-project/tree/master/img/1.png)
+![2](https://github.com/QianyiChen532/posenet-project/tree/master/img/2.png)
 
 ### Running
 [Heroku](https://daisy-posenetproject.herokuapp.com/)
