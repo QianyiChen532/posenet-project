@@ -1,32 +1,20 @@
-# P5 ML PoseNet Start Kit
+## (A)synchronous Force :dancer:
 
-This repository uses [p5.js](https://p5js.org), [ml5.js](https://ml5js.org), and
-[PoseNet] to display a webcam image, labelled with pose detection skeleton and
-points.
+### Movement Practice and Physical Computation - PoseNet Project
+### NYUSH Spring 2020
 
-## Installation
+[1](https://github.com/QianyiChen532/posenet-project/tree/master/img)
 
-1. Clone this repo.
+### Running
+[Heroku](https://daisy-posenetproject.herokuapp.com/)
 
-2. Install [Node.js](https://nodejs.org).
-   - macOS: [install HomeBrew](https://brew.sh). Then enter `brew install node`
-     into a terminal window.
-   - Windows: Follow the instructions in the [Node.js download
-     page](https://nodejs.org/en/).
+### Instruction
 
-3. Install the npm (JavaScript) development packages. In a terminal window:
-   - Change directories (`cd`) into the repository directory.
-   - Enter `npm install`
+1. On the intro page, choose how many people you want to interact with(namely the total number of videos you want to put on the page)
+2. Use key ‘a’ and ‘s’ to control the display of lines
+3. Use mouse position to control the opacity of the background video(left=black background, no image of video, right = show the original video)
+4. Move your body to see how the movement and interaction happen
 
-## Running
-
-In a terminal window:
-
-- Change directories (`cd`) into the repository directory.
-- Enter `npm start`
-
-This will open PoseNet in a browser window.
-
-## License
-
-MIT License
+### Reference
+- Nature of Code Tutorials
+- PoseNet documentation
